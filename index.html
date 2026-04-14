@@ -2,6 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- ── Device detection — runs synchronously before first paint ──────────
+       Sets data-device on <html> to one of: ios | android | mac | desktop
+       CSS uses [data-device="..."] selectors to show/hide platform sections.
+       Must be first script in <head> to guarantee no flicker.
+  ─────────────────────────────────────────────────────────────────────── -->
+  <script>
+    (function () {
+      var ua  = navigator.userAgent || '';
+      var pf  = navigator.platform  || '';
+      var device;
+
+      if (/iphone|ipad|ipod/i.test(ua)) {
+        device = 'ios';
+      } else if (/android/i.test(ua)) {
+        device = 'android';
+      } else if (/mac/i.test(pf) || /macintosh/i.test(ua)) {
+        device = 'mac';
+      } else {
+        device = 'desktop';
+      }
+
+      document.documentElement.setAttribute('data-device', device);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
