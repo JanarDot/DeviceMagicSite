@@ -81,6 +81,12 @@ async function handleActivate() {
     return;
   }
 
+  // Step 2b: iOS suspends the AudioContext during the async permission dialog.
+  // Re-resume it now that we're back in a resolved state.
+  if (audio.ctx && audio.ctx.state === 'suspended') {
+    await audio.ctx.resume();
+  }
+
   // Step 3: Preload all 40 audio files into memory
   btn.textContent = 'Loading spells…';
   await audio.preload(getAllAudioFilenames());
@@ -99,7 +105,9 @@ async function handleActivate() {
     wakeLock = await navigator.wakeLock.request('screen');
   } catch (_) {}
 
-  // Step 7: Transition from landing screen to casting UI
+  // Step 7: Briefly confirm readiness, then transition to casting UI
+  btn.textContent = 'Your phone is a wand now';
+  await new Promise(r => setTimeout(r, 1100));
   _el('landing').hidden = true;
   _el('casting').hidden = false;
   _updateStatusUI();
@@ -110,14 +118,14 @@ async function handleActivate() {
 // and also by the "Cast a test spell" button.
 // Mirrors AppModel.castSpell() in the iOS app.
 
-function onGestureDetected() {
+async function onGestureDetected() {
   const { spell, filename, nextVoiceWasFemale } = selectSpell(
     state.lastSpellId,
     state.lastVoiceWasFemale,
     state.voiceStyle
   );
 
-  audio.play(filename);
+  await audio.play(filename);
 
   state.lastSpellId        = spell.id;
   state.lastVoiceWasFemale = nextVoiceWasFemale;

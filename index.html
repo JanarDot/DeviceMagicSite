@@ -438,6 +438,45 @@
       background: var(--gold-glow);
     }
 
+    /* Spell card — no status row, just spell name + counter */
+    .spell-card {
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 0 2px;
+      color: var(--text-muted);
+      animation: scrollBounce 2s ease-in-out infinite;
+      transition: opacity 0.4s;
+    }
+
+    .scroll-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scroll-hint-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .scroll-chevron {
+      width: 22px;
+      height: 13px;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(5px); }
+    }
+
     /* Casting hint */
     .casting-hint {
       text-align: center;
@@ -587,15 +626,22 @@
   ───────────────────────────────────────────────────────────────────────── -->
   <section id="casting" hidden>
 
-    <!-- Status + last spell -->
-    <div class="card">
-      <div class="status-row">
-        <span id="status-emoji">🪄</span>
-        <span id="status-text">Listening for spells</span>
-      </div>
+    <!-- Hidden status elements — updated by app.js, not displayed -->
+    <span id="status-emoji" style="display:none"></span>
+    <span id="status-text"  style="display:none"></span>
 
+    <!-- Spell display -->
+    <div class="card spell-card">
       <div id="last-spell"></div>
       <div id="spell-count"></div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint" id="scroll-hint">
+      <span class="scroll-hint-label">settings</span>
+      <svg class="scroll-chevron" viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="2,2 12,12 22,2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
 
     <!-- Settings -->
@@ -651,6 +697,14 @@
   <!-- ─────────────────────────────────────────────────────────────────────
        JS — load in dependency order
   ───────────────────────────────────────────────────────────────────────── -->
+  <script>
+    // Hide the scroll hint once the user scrolls down
+    window.addEventListener('scroll', function hideHint() {
+      const hint = document.getElementById('scroll-hint');
+      if (hint) hint.classList.add('hidden');
+      window.removeEventListener('scroll', hideHint);
+    }, { passive: true });
+  </script>
   <script src="js/spells.js"></script>
   <script src="js/motion.js"></script>
   <script src="js/audio.js"></script>

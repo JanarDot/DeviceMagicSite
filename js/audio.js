@@ -58,12 +58,13 @@ class AudioEngine {
 
   // Plays a spell audio file.
   // Stops any currently playing spell first — mirrors playerNode.stop() in SpellPlayer.swift.
-  play(filename) {
+  async play(filename) {
     if (!this.ctx || !this.buffers.has(filename)) return;
 
-    // Resume context if it was suspended (browser policy on some Android versions)
+    // Resume context if suspended — must be awaited so audio actually starts.
+    // iOS suspends the context after async operations (e.g. permission dialog).
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      await this.ctx.resume();
     }
 
     // Stop the current spell — mirrors playerNode.stop() before scheduleFile()
