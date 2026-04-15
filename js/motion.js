@@ -1,40 +1,46 @@
-// Motion detector — mirrors MotionDetector.swift from the iOS app.
-// Listens to the phone accelerometer and fires a callback when a spell gesture is detected.
+// Motion detector — wrist-flick gesture detection for the browser app.
 
 class MotionEngine {
   constructor(onGesture, onRawMotion) {
     this.onGesture   = onGesture;
-    this.onRawMotion = onRawMotion || null; // optional: called on every event for visual feedback
+    this.onRawMotion = onRawMotion || null;
     this.lastTriggerTime = 0;
+    this._prevMag = 0; // previous magnitude reading (for jerk fallback)
 
-    // iOS native app uses 20 m/s² (tuned for deliberate pointing-at-Mac gesture).
-    // Browser version uses 12 m/s² — a casual wrist flick produces ~12–16 m/s²,
-    // so 20 was consistently out of reach for most users.
-    this.THRESHOLD = 12;
+    // ── Tuning ─────────────────────────────────────────────────────────────
+    //
+    // The hard problem: distinguishing a deliberate wrist flick from incidental
+    // movements like setting the phone on a table or picking it up.
+    //
+    // Primary filter: rotation rate (gyroscope).
+    //   A wrist flick/whip involves rapid wrist rotation: 200–400 deg/s.
+    //   Putting a phone down or picking it up is mostly linear — very little
+    //   rotation. This is the best single discriminator available.
+    //
+    // Secondary filter (fallback — devices without gyroscope):
+    //   Per-frame magnitude delta. A flick produces a sharp spike (large delta
+    //   between consecutive readings). Slow movements have small deltas.
+    //
+    // Magnitude threshold:
+    //   accelerationIncludingGravity at rest = ~9.8 m/s² regardless of
+    //   orientation. A solid wrist flick adds 6–15 m/s² on top → 15–25 m/s².
+    //   Threshold of 15 lets through deliberate flicks and blocks idle motion.
 
-    // 2000ms cooldown — slightly shorter than the iOS 3s to feel more responsive
-    // in a browser context where users are testing by repeated short flicks.
-    this.COOLDOWN = 2000;
+    this.MAG_THRESHOLD  = 15;   // m/s² — total acceleration magnitude trigger point
+    this.MIN_ROTATION   = 80;   // deg/s — minimum rotation magnitude (gyroscope path)
+    this.MIN_DELTA      = 5;    // m/s² — minimum per-frame change (no-gyro fallback)
+    this.COOLDOWN       = 2000; // ms  — minimum gap between spells
 
-    // Bind the handler so we can remove it cleanly in stop()
     this._boundHandler = this._handleMotion.bind(this);
   }
 
-  // Returns true if DeviceMotionEvent is supported at all.
   static isSupported() {
     return typeof DeviceMotionEvent !== 'undefined';
   }
 
-  // Requests motion permission if needed, then resolves true/false.
-  // Must be called from inside a user tap event — iOS 13+ requires this.
-  // Android and desktop skip the permission step entirely.
   async requestPermission() {
-    if (!MotionEngine.isSupported()) {
-      // Desktop or old browser with no accelerometer
-      return false;
-    }
+    if (!MotionEngine.isSupported()) return false;
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      // iOS 13+ path — triggers the native permission dialog
       try {
         const result = await DeviceMotionEvent.requestPermission();
         return result === 'granted';
@@ -42,37 +48,49 @@ class MotionEngine {
         return false;
       }
     }
-    // Android and all other browsers — no permission needed, just proceed
-    return true;
+    return true; // Android / desktop — no prompt needed
   }
 
-  // Starts listening for gestures. Call after requestPermission() resolves true.
   start() {
     window.addEventListener('devicemotion', this._boundHandler);
   }
 
-  // Stops listening. Called when the user toggles monitoring off.
   stop() {
     window.removeEventListener('devicemotion', this._boundHandler);
   }
 
   _handleMotion(event) {
     const a = event.accelerationIncludingGravity;
-
-    // Guard: some browsers report null values before the sensor warms up
     if (!a || a.x === null || a.y === null || a.z === null) return;
 
-    // Same magnitude formula as MotionDetector.swift: √(x² + y² + z²)
     const magnitude = Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 
-    // Fire raw motion callback on every event so the UI can show the sensor is working
-    if (this.onRawMotion) {
-      this.onRawMotion(magnitude);
+    // Track per-frame delta for the no-gyro fallback
+    const delta = Math.abs(magnitude - this._prevMag);
+    this._prevMag = magnitude;
+
+    // Always fire raw callback so the sensor dot can pulse
+    if (this.onRawMotion) this.onRawMotion(magnitude);
+
+    // ── Primary magnitude check ─────────────────────────────────────────
+    if (magnitude < this.MAG_THRESHOLD) return;
+
+    // ── Wrist-rotation check ────────────────────────────────────────────
+    // Use rotation rate if the gyroscope is available.
+    // This is the key filter: a flick has fast wrist rotation; a put-down doesn't.
+    const rot = event.rotationRate;
+    const hasGyro = rot && rot.alpha !== null && rot.beta !== null && rot.gamma !== null;
+
+    if (hasGyro) {
+      const rotMag = Math.sqrt(rot.alpha * rot.alpha + rot.beta * rot.beta + rot.gamma * rot.gamma);
+      if (rotMag < this.MIN_ROTATION) return;
+    } else {
+      // No gyroscope — fall back to per-frame jerk.
+      // Requires the magnitude to jump sharply, which a slow movement won't do.
+      if (delta < this.MIN_DELTA) return;
     }
 
-    if (magnitude < this.THRESHOLD) return;
-
-    // Enforce cooldown
+    // ── Cooldown ────────────────────────────────────────────────────────
     const now = Date.now();
     if (now - this.lastTriggerTime < this.COOLDOWN) return;
 

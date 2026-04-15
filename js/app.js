@@ -139,11 +139,6 @@ async function handleActivate() {
   castingEl.removeAttribute('hidden');
 
   _updateStatusUI();
-
-  // Scroll casting into view so the user immediately sees the active state
-  setTimeout(() => {
-    castingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 150);
 }
 
 // ── Gesture detected ─────────────────────────────────────────────────────────
