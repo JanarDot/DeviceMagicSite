@@ -867,6 +867,77 @@
       animation-delay: 1.12s;
     }
 
+    /* ── Mac install note (Gatekeeper workaround) ───────────────────────── */
+    .install-note {
+      margin-top: 20px;
+      background: rgba(196, 151, 63, 0.07);
+      border: 1px solid rgba(196, 151, 63, 0.18);
+      border-radius: 14px;
+      padding: 16px 18px;
+      max-width: 310px;
+      text-align: left;
+    }
+    .install-note-title {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--gold-dim);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .install-note-body {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .install-cmd-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+    }
+    .install-cmd {
+      font-family: 'DM Mono', 'Fira Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--gold-bright);
+      letter-spacing: 0.01em;
+      word-break: break-all;
+      flex: 1;
+      line-height: 1.5;
+    }
+    .install-copy-btn {
+      flex-shrink: 0;
+      background: rgba(196, 151, 63, 0.18);
+      border: 1px solid rgba(196, 151, 63, 0.3);
+      border-radius: 6px;
+      color: var(--gold-dim);
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-family: var(--font-ui);
+    }
+    .install-copy-btn:hover {
+      background: rgba(196, 151, 63, 0.28);
+      color: var(--gold-bright);
+    }
+    .install-note-alt {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+    .install-note-alt strong {
+      color: var(--text-muted);
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
     .platform-also {
       margin-top: 18px;
       font-size: 0.62rem;
@@ -1150,9 +1221,23 @@
       </a>
 
       <p class="platform-note">
-        Unzip and move to Applications<br>
-        Runs silently in your menu bar
+        Runs silently in your menu bar &nbsp;·&nbsp; macOS 14+
       </p>
+
+      <div class="install-note">
+        <p class="install-note-title">Blocked by macOS?</p>
+        <p class="install-note-body">
+          Apple blocks unverified apps by default. Paste this in Terminal to install without the warning:
+        </p>
+        <div class="install-cmd-wrap">
+          <code class="install-cmd" id="install-cmd">curl -fsSL https://janardot.github.io/DeviceMagic/downloads/install.sh | bash</code>
+          <button class="install-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('install-cmd').textContent).then(()=>{this.textContent='Copied';setTimeout(()=>{this.textContent='Copy'},1800)})">Copy</button>
+        </div>
+        <p class="install-note-alt">
+          Or: open the downloaded app, click Done, then go to<br>
+          <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>
+        </p>
+      </div>
 
       <p class="platform-also">
         Also on
