@@ -867,6 +867,24 @@
       animation-delay: 1.12s;
     }
 
+    .platform-also {
+      margin-top: 18px;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-align: center;
+      opacity: 0.7;
+    }
+    .platform-also-link {
+      color: var(--gold-dim);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(196, 151, 63, 0.3);
+    }
+    .platform-also-link:hover {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+    }
+
     /* ── Desktop / QR view ──────────────────────────────────────────────── */
     .desktop-message {
       font-family: var(--font-display);
@@ -1134,6 +1152,12 @@
       <p class="platform-note">
         Unzip and move to Applications<br>
         Runs silently in your menu bar
+      </p>
+
+      <p class="platform-also">
+        Also on
+        <a href="https://janardot.github.io/DeviceMagic/" class="platform-also-link">iPhone &amp; Android</a>
+        — no download needed, open in browser
       </p>
 
     </div>
