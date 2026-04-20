@@ -1163,62 +1163,6 @@
       }
       .footer-love { text-align: left; }
     }
-
-    /* ── Wand Flick Illustration ────────────────────────────────────────── */
-    .landing-visual {
-      margin: 22px 0 4px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .wand-anim {
-      width: 150px;
-      height: auto;
-      overflow: visible;
-    }
-
-    /* Arm group */
-    .wand-arm {
-      transform-box: fill-box;
-      transform-origin: 50% 63%;
-    }
-
-    /* Arm body */
-    .wand-sleeve { fill: #110e07; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .wand-hatch  { stroke: var(--gold); stroke-width: 0.9; opacity: 0.35; }
-    .wand-cuff   { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-linecap: round; opacity: 0.5; }
-    .wand-thumb  { fill: #110e07; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .wand-fingers{ fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-linecap: round; }
-    .wand-palm   { fill: #110e07; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-    /* Phone */
-    .wand-phone-body { fill: #161310; stroke: var(--gold); stroke-width: 2; }
-    .wand-screen     { fill: #0f0d0a; stroke: var(--gold-dim); stroke-width: 1; }
-    .wand-screen-line{ stroke: var(--gold); stroke-width: 1.3; stroke-linecap: round; opacity: 0.6; }
-    .wand-screen-dim { stroke: var(--gold-dim); stroke-width: 1; stroke-linecap: round; opacity: 0.38; }
-    .wand-symbol     { font-family: serif; font-size: 11px; fill: var(--gold-bright); opacity: 0.8; }
-    .wand-island     { fill: #0f0d0a; }
-    .wand-home       { stroke: var(--gold-dim); stroke-width: 1.8; stroke-linecap: round; opacity: 0.45; }
-
-    /* Sparkle */
-    .wand-sparkle {
-      transform-box: fill-box;
-      transform-origin: 50% 50%;
-      opacity: 0;
-      animation: wand-sparkle 3.8s ease infinite;
-    }
-    .wand-star { fill: var(--gold-bright); }
-    .wand-dot  { fill: var(--gold-bright); }
-    .wand-dot-dim { fill: var(--gold); opacity: 0.6; }
-
-    /* ── Keyframes ──────────────────────────────────────────────────────── */
-    @keyframes wand-sparkle {
-      0%, 41%  { opacity: 0; transform: scale(0.1) rotate(0deg); }
-      52%      { opacity: 1; transform: scale(1)   rotate(18deg); }
-      68%      { opacity: 0; transform: scale(1.5) rotate(36deg); }
-      100%     { opacity: 0; transform: scale(0.1) rotate(0deg); }
-    }
-
   </style>
 </head>
 
@@ -1240,57 +1184,6 @@
 
       <p class="landing-tagline">Flick your wrist.<br>Cast a spell.</p>
 
-      <div class="landing-visual">
-        <svg class="wand-anim" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <filter id="wand-sketch">
-              <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="5" result="n"/>
-              <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-          </defs>
-          <!-- Arm group -->
-          <g class="wand-arm" filter="url(#wand-sketch)">
-            <!-- Sleeve body -->
-            <path class="wand-sleeve" d="M 80 256 C 78 238 74 220 72 202 C 70 188 72 178 80 172 C 86 168 94 166 100 166 C 106 166 114 168 120 172 C 128 178 130 188 128 202 C 126 220 122 238 120 256 Z"/>
-            <!-- Cross-hatch shadow (left) -->
-            <line class="wand-hatch" x1="76" y1="222" x2="83" y2="207"/>
-            <line class="wand-hatch" x1="73" y1="236" x2="80" y2="221"/>
-            <line class="wand-hatch" x1="74" y1="249" x2="80" y2="236"/>
-            <!-- Cuff detail -->
-            <path class="wand-cuff" d="M 74 182 Q 100 176 126 182"/>
-            <!-- Thumb -->
-            <path class="wand-thumb" d="M 72 158 C 67 152 65 144 68 138 C 71 132 79 133 81 139 C 83 145 79 156 76 163"/>
-            <!-- Finger knuckles (right) -->
-            <path class="wand-fingers" d="M 124 148 C 128 142 129 135 127 130 C 125 125 120 127 119 132"/>
-            <path class="wand-fingers" d="M 126 162 C 130 156 131 149 129 144 C 127 139 122 141 121 146"/>
-            <!-- Palm base -->
-            <path class="wand-palm" d="M 76 163 C 76 168 78 174 83 177 C 88 180 96 181 100 181 C 104 181 112 180 117 177 C 122 174 124 168 124 163"/>
-            <!-- Phone body -->
-            <rect class="wand-phone-body" x="77" y="50" width="46" height="88" rx="7"/>
-            <!-- Phone screen -->
-            <rect class="wand-screen" x="81" y="58" width="38" height="66" rx="4"/>
-            <!-- Screen content lines -->
-            <line class="wand-screen-line" x1="90" y1="76" x2="110" y2="76"/>
-            <line class="wand-screen-dim"  x1="88" y1="87" x2="112" y2="87"/>
-            <line class="wand-screen-dim"  x1="90" y1="97" x2="110" y2="97"/>
-            <!-- Magic symbol -->
-            <text x="100" y="116" text-anchor="middle" class="wand-symbol">✦</text>
-            <!-- Dynamic island -->
-            <rect class="wand-island" x="91" y="55" width="18" height="4" rx="2"/>
-            <!-- Home indicator -->
-            <line class="wand-home" x1="93" y1="132" x2="107" y2="132"/>
-          </g>
-          <!-- Sparkle burst -->
-          <g class="wand-sparkle">
-            <path class="wand-star" d="M 163 44 L 166 54 L 176 57 L 166 60 L 163 70 L 160 60 L 150 57 L 160 54 Z"/>
-            <circle class="wand-dot"     cx="148" cy="46" r="2.2"/>
-            <circle class="wand-dot"     cx="178" cy="46" r="1.8"/>
-            <circle class="wand-dot"     cx="177" cy="68" r="1.8"/>
-            <circle class="wand-dot-dim" cx="149" cy="68" r="1.2"/>
-          </g>
-        </svg>
-      </div>
-
       <button id="activate-btn" class="btn-activate">Cast a Spell</button>
 
       <p class="landing-sub">Turn up your volume &nbsp;·&nbsp; Allow motion access when prompted</p>
@@ -1307,45 +1200,6 @@
       <div class="gold-rule"></div>
 
       <p class="landing-tagline">Flick your wrist.<br>Cast a spell.</p>
-
-      <div class="landing-visual">
-        <svg class="wand-anim" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <filter id="wand-sketch2">
-              <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="5" result="n"/>
-              <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-          </defs>
-          <!-- Arm group -->
-          <g class="wand-arm" filter="url(#wand-sketch2)">
-            <path class="wand-sleeve" d="M 80 256 C 78 238 74 220 72 202 C 70 188 72 178 80 172 C 86 168 94 166 100 166 C 106 166 114 168 120 172 C 128 178 130 188 128 202 C 126 220 122 238 120 256 Z"/>
-            <line class="wand-hatch" x1="76" y1="222" x2="83" y2="207"/>
-            <line class="wand-hatch" x1="73" y1="236" x2="80" y2="221"/>
-            <line class="wand-hatch" x1="74" y1="249" x2="80" y2="236"/>
-            <path class="wand-cuff" d="M 74 182 Q 100 176 126 182"/>
-            <path class="wand-thumb" d="M 72 158 C 67 152 65 144 68 138 C 71 132 79 133 81 139 C 83 145 79 156 76 163"/>
-            <path class="wand-fingers" d="M 124 148 C 128 142 129 135 127 130 C 125 125 120 127 119 132"/>
-            <path class="wand-fingers" d="M 126 162 C 130 156 131 149 129 144 C 127 139 122 141 121 146"/>
-            <path class="wand-palm" d="M 76 163 C 76 168 78 174 83 177 C 88 180 96 181 100 181 C 104 181 112 180 117 177 C 122 174 124 168 124 163"/>
-            <rect class="wand-phone-body" x="77" y="50" width="46" height="88" rx="7"/>
-            <rect class="wand-screen" x="81" y="58" width="38" height="66" rx="4"/>
-            <line class="wand-screen-line" x1="90" y1="76" x2="110" y2="76"/>
-            <line class="wand-screen-dim"  x1="88" y1="87" x2="112" y2="87"/>
-            <line class="wand-screen-dim"  x1="90" y1="97" x2="110" y2="97"/>
-            <text x="100" y="116" text-anchor="middle" class="wand-symbol">✦</text>
-            <rect class="wand-island" x="91" y="55" width="18" height="4" rx="2"/>
-            <line class="wand-home" x1="93" y1="132" x2="107" y2="132"/>
-          </g>
-          <!-- Sparkle burst -->
-          <g class="wand-sparkle">
-            <path class="wand-star" d="M 163 44 L 166 54 L 176 57 L 166 60 L 163 70 L 160 60 L 150 57 L 160 54 Z"/>
-            <circle class="wand-dot"     cx="148" cy="46" r="2.2"/>
-            <circle class="wand-dot"     cx="178" cy="46" r="1.8"/>
-            <circle class="wand-dot"     cx="177" cy="68" r="1.8"/>
-            <circle class="wand-dot-dim" cx="149" cy="68" r="1.2"/>
-          </g>
-        </svg>
-      </div>
 
       <a class="btn-download" href="downloads/device-magic.apk" download="device-magic.apk">
         Download for Android
